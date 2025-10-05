@@ -1,5 +1,9 @@
 # Htier Live Streaming Hub - Comprehensive Documentation
 
+To run the Htier Application, double click on run_app.bat,
+This will run the Htier Application in the browser, 
+So user can select the multiple protocols from the dropdown menu
+
 ## Table of Contents
 1. [Application Overview](#application-overview)
 2. [Dropdown Options Reference](#dropdown-options-reference)

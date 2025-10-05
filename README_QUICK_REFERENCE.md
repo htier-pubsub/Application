@@ -1,5 +1,10 @@
 # Live Streaming App - Dropdown Options & Rust Integration Quick Reference
 
+To run the Htier Application, double click on run_app.bat,
+This will run the Htier Application in the browser, 
+So user can select the multiple protocols from the dropdown menus as shown below
+
+
 ## 📋 All Dropdown Options
 
 ### 1️⃣ Main Protocol Selector
@@ -212,7 +217,7 @@ The Streamlit app automatically parses this to show:
 
 - **Main App:** `app.py`
 - **Bridge Script:** `attached_assets/stream_bridge_http_1757249928257.py`
-- **Full Documentation:** `COMPREHENSIVE_DOCUMENTATION.md`
+- **Full Documentation:** `README.md`
 - **Installation Guide:** `INSTALLATION_GUIDE.md`
 
 ---

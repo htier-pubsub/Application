@@ -45,7 +45,7 @@ def save_message_to_file(message):
             with open(MESSAGE_FILE, 'wb') as f:
                 pickle.dump(messages, f)
             
-            print(f"💾 SAVED: Message saved to file. Total in file: {len(messages)}")
+            #print(f"💾 SAVED: Message saved to file. Total in file: {len(messages)}")
     except Exception as e:
         print(f"❌ Error saving message to file: {e}")
 
@@ -109,7 +109,7 @@ def clear_ui_messages():
             st.session_state.last_processed_counter = 0
         # Set flag to prevent immediate reloading
         st.session_state.messages_just_cleared = True
-        print("🗑️ Cleared UI session state messages (files preserved)")
+        #print("🗑️ Cleared UI session state messages (files preserved)")
         return True
     except Exception as e:
         print(f"❌ Error clearing UI messages: {e}")
@@ -199,7 +199,7 @@ def process_message_queue(force_reload=False):
     # Skip processing if messages were just cleared (prevent race condition)
     # BUT allow force_reload to override this (for user-initiated actions)
     if st.session_state.get('messages_just_cleared', False) and not force_reload:
-        print("🚫 Skipping message processing - messages were just cleared (use force_reload=True to override)")
+        #print("🚫 Skipping message processing - messages were just cleared (use force_reload=True to override)")
         return 0
     
     # Load messages from file
@@ -209,7 +209,7 @@ def process_message_queue(force_reload=False):
     # If file is empty but session has messages, clear session (file was cleared)
     if len(file_messages) == 0 and len(st.session_state.messages) > 0:
         st.session_state.messages = []
-        print("🗑️ Session messages cleared - file was cleared")
+        #print("🗑️ Session messages cleared - file was cleared")
         return 0
     
     # Filter messages to only show ones from current connection session (all protocols)
@@ -234,8 +234,8 @@ def process_message_queue(force_reload=False):
                     
                     if msg_time >= connection_dt:
                         filtered_messages.append(msg)
-                    else:
-                        print(f"🕒 FILTERED OUT: {msg.get('protocol', 'Unknown')} message from {timestamp_str} (before connection)")
+                    #else:
+                        #print(f"🕒 FILTERED OUT: {msg.get('protocol', 'Unknown')} message from {timestamp_str} (before connection)")
                 except Exception as e:
                     # If timestamp parsing fails, include the message
                     print(f"⚠️ TIMESTAMP PARSE ERROR: {e} for timestamp '{msg.get('timestamp', 'None')}'")
@@ -245,8 +245,8 @@ def process_message_queue(force_reload=False):
                 filtered_messages.append(msg)
         
         active_protocol = st.session_state.get('active_protocol', 'Unknown')
-        print(f"🕒 FILTERED: Showing {len(filtered_messages)} {active_protocol} messages since connection time {connection_time}")
-        print(f"🕒 FILTERED: Total messages in file: {len(file_messages)}")
+        #print(f"🕒 FILTERED: Showing {len(filtered_messages)} {active_protocol} messages since connection time {connection_time}")
+        #print(f"🕒 FILTERED: Total messages in file: {len(file_messages)}")
         file_messages = filtered_messages
     
     # Update session state with filtered messages
@@ -857,7 +857,7 @@ st.caption("Connect to MQTT, HTTP/REST, or Modbus data sources")
 # 1. User explicitly clicks Refresh button
 # 2. New messages arrive from active connections  
 # 3. User wants to see saved history
-print(f"📄 UI: Right side messages not auto-loaded (use Refresh to see saved messages)")
+#print(f"📄 UI: Right side messages not auto-loaded (use Refresh to see saved messages)")
 
 # Protocol selection
 st.header("🔧 Protocol Selection")
@@ -876,11 +876,11 @@ st.selectbox(
 
 # Get current active protocol (now managed entirely through on_change)
 active_protocol = st.session_state.active_protocol
-print(f"📄 UI: Using {active_protocol} handler (active_protocol: {active_protocol})")
+#print(f"📄 UI: Using {active_protocol} handler (active_protocol: {active_protocol})")
 
 # Get current protocol handler - refresh to ensure correct handler after protocol switch
 current_handler = st.session_state.protocol_handlers[st.session_state.active_protocol]
-print(f"📄 UI: Using {current_handler.name} handler (active_protocol: {st.session_state.active_protocol})")
+#print(f"📄 UI: Using {current_handler.name} handler (active_protocol: {st.session_state.active_protocol})")
 
 # Create two columns for layout
 col1, col2 = st.columns([1, 2])
@@ -1163,7 +1163,7 @@ with col2:
             if st.button("🗑️ Clear Messages"):
                 if clear_ui_messages():
                     st.success("✅ All messages cleared!")
-                    print(f"🗑️ UI: Clear button pressed - all messages cleared")
+                    #print(f"🗑️ UI: Clear button pressed - all messages cleared")
                 else:
                     st.error("❌ Failed to clear messages")
     
