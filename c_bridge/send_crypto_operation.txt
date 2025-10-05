@@ -1,0 +1,99 @@
+cJSON* send_crypto_operation(const char* operation, const char* data, int length) {
+    CURL *curl;
+    CURLcode res = CURLE_FAILED_INIT;  // Initialize
+    MemoryStruct chunk;
+    long response_code = 0;
+    cJSON *json = NULL;
+    cJSON *response_json = NULL;
+    
+    chunk.memory = malloc(1);
+    chunk.size = 0;
+    
+    if (!chunk.memory) {
+        printf("Failed to allocate memory for crypto operation\n");
+        return NULL;
+    }
+    
+    // Create JSON payload
+    json = cJSON_CreateObject();
+    if (!json) {
+        printf("Failed to create JSON object\n");
+        free(chunk.memory);
+        return NULL;
+    }
+    
+    cJSON_AddStringToObject(json, "operation", operation);
+    
+    if (data && strlen(data) > 0) {
+        cJSON_AddStringToObject(json, "data", data);
+    }
+    if (length > 0) {
+        cJSON_AddNumberToObject(json, "length", length);
+    }
+    
+    char *json_string = cJSON_Print(json);
+    if (!json_string) {
+        printf("Failed to print JSON\n");
+        cJSON_Delete(json);
+        free(chunk.memory);
+        return NULL;
+    }
+    
+    curl = curl_easy_init();
+    if (curl) {
+        char url[256];
+        snprintf(url, sizeof(url), "%s/crypto", RUST_SERVER_URL);
+        
+        struct curl_slist *headers = NULL;
+        headers = curl_slist_append(headers, "Content-Type: application/json");
+        
+        curl_easy_setopt(curl, CURLOPT_URL, url);
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, json_string);
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
+        curl_easy_setopt(curl, CURLOPT_TIMEOUT, HTTP_TIMEOUT);
+        
+        res = curl_easy_perform(curl);
+        curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
+        
+        curl_slist_free_all(headers);
+        curl_easy_cleanup(curl);
+    }
+    // Parse response if successful
+	if (res == CURLE_OK && response_code == 200 && chunk.memory && chunk.size > 0) {
+        printf("Crypto response received: %s\n", chunk.memory);
+        printf("Response length: %zu\n", chunk.size);
+        printf("Response last char: %d\n", (int)chunk.memory[chunk.size-1]);
+        printf("Attempting to parse JSON...\n");
+        
+        response_json = cJSON_Parse(chunk.memory);
+        if (response_json) {
+            printf("JSON parsed successfully\n");
+            // DO NOT ACCESS THE JSON OBJECTS HERE - return it safely
+        } else {
+            printf("JSON parsing failed\n");
+        }
+    }
+    
+    // Cleanup
+	/*
+    cJSON_Delete(json);
+    free(json_string);
+    if (chunk.memory) {
+        free(chunk.memory);
+    }*/
+	
+		// Safer cleanup
+	if (json && json != response_json) {  // Don't delete if it's the same object
+		cJSON_Delete(json);
+	}
+	if (json_string) {
+		free(json_string);
+	}
+	if (chunk.memory) {
+		free(chunk.memory);
+	}
+    
+    return response_json;
+}

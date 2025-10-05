@@ -1,0 +1,58 @@
+# Overview
+
+This is a Universal Live Streaming Hub built with Streamlit that provides a unified web interface for connecting to multiple real-time data sources. The application supports MQTT brokers, HTTP/REST servers (like Rust servers), and Modbus TCP industrial systems. Users can select protocols, configure connections, and view live streaming data in a unified message display format.
+
+# User Preferences
+
+Preferred communication style: Simple, everyday language.
+
+# System Architecture
+
+## Frontend Architecture
+- **Framework**: Streamlit for web UI with multi-protocol support
+- **Protocol Selection**: Dynamic protocol switching (MQTT, HTTP, Modbus)
+- **Real-time Updates**: Universal session state management for all protocols
+- **Message Handling**: File-based cross-thread communication system for all streaming sources
+
+## Backend Architecture
+- **Protocol Handlers**: Abstract base class with concrete implementations for each protocol
+- **MQTT Handler**: Paho MQTT library with callback-based message processing
+- **HTTP Handler**: Requests library with polling-based data collection from REST APIs
+- **Modbus Handler**: PyModbusTCP library with register polling for industrial data
+- **Threading**: Multi-threaded approach for all protocols without blocking the UI
+- **State Management**: Universal file-based storage system for cross-thread communication
+
+## Data Flow
+- **Universal Message Format**: All protocols use standardized message structure with protocol, timestamp, source, data, and metadata fields
+- **Cross-Thread Communication**: File-based storage (pickle) ensures message data flows between background threads and UI thread
+- **Data Processing**: Automatic parsing and formatting of different data types (JSON, arrays, plain text)
+- **Protocol Management**: Dynamic connection management with status tracking for each protocol
+
+## Connection Management
+- **Multi-Protocol Support**: Unified connection interface for MQTT brokers, HTTP servers, and Modbus devices
+- **Status Monitoring**: Real-time connection status tracking for all protocol handlers
+- **Error Handling**: Comprehensive error handling and recovery for each protocol type
+- **Configuration UI**: Protocol-specific configuration forms with validation
+
+# External Dependencies
+
+## Core Libraries
+- **Streamlit**: Web application framework for the universal user interface
+- **Paho MQTT**: MQTT client library for IoT broker communication
+- **Requests**: HTTP client library for REST API polling
+- **PyModbusTCP**: Modbus TCP client library for industrial device communication
+- **Threading**: Python standard library for concurrent protocol operations
+- **Pickle**: Serialization for cross-thread message storage
+
+## External Systems
+- **MQTT Brokers**: Supports any standard MQTT broker (tested with broker.emqx.io)
+- **HTTP/REST Servers**: Polls REST endpoints for data updates (designed for Rust servers)
+- **Modbus TCP Devices**: Connects to industrial Modbus TCP servers and PLCs
+- **Protocol Agnostic**: Unified interface works with any streaming data source
+
+## Data Formats
+- **Universal Message Structure**: Standardized format across all protocols
+- **JSON Support**: Automatic JSON parsing and display for structured data
+- **Array Handling**: Special formatting for Modbus register arrays and list data
+- **Plain Text**: Fallback support for any text-based data formats
+- **Metadata Tracking**: Protocol-specific metadata (QoS, addresses, URLs) preserved and displayed

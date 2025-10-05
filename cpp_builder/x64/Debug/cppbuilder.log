@@ -1,0 +1,7 @@
+﻿  cppbuilder.cpp
+C:\cppbuilder\cppbuilder.cpp(139,76): warning C4244: 'argument': conversion from '_Rep' to 'unsigned int', possible loss of data
+C:\cppbuilder\cppbuilder.cpp(139,76): warning C4244:         with
+C:\cppbuilder\cppbuilder.cpp(139,76): warning C4244:         [
+C:\cppbuilder\cppbuilder.cpp(139,76): warning C4244:             _Rep=__int64
+C:\cppbuilder\cppbuilder.cpp(139,76): warning C4244:         ]
+  cppbuilder.vcxproj -> C:\cppbuilder\x64\Debug\cppbuilder.exe
